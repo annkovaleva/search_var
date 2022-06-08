@@ -17,7 +17,14 @@ using namespace std;
  */
 void data_output(string file_name, int names_index[], int len_names);
 
-
+/*!
+ Запись текста из файла в массив строк
+ * \param[in] name_file[] имя файла
+ * \param[in,out] arr_text[] массив, в который помещаем информацию из текста
+ * \param[in] index_erorr указатель на ошибку в определенном файле
+ * \return длина массива
+ */
+int data_input(char name_file[], string arr_text[], int index_erorr);
 
 
 

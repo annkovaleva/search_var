@@ -50,3 +50,38 @@ void data_output(string file_name, int names_index[], int len_names) {
     }
 
 }
+
+int data_input(char name_file[], string arr_text[], int index_erorr) {
+
+    ifstream file(name_file);                                                                                     //! Объект, который помогает читать файл
+    int len_text = 0;                                                                                              //! Количество строк в тексте функции
+
+    //! Если файл открылся, то
+    if (file.is_open())
+    {
+        //! Пока не кончился файл записать каждую строчку в массив
+        while (getline(file, arr_text[len_text])) {
+
+            //! Инкрементировать длину массива строк
+            len_text++;
+        }
+        //! Закрыть файл
+        file.close();
+
+        //! Возвратить длину массива строк
+        return len_text;
+    }
+    //! Иначе, если мы читаем файл с именами переменных, то
+    else if (index_erorr==1) {
+
+        //! Вывести ошибку №6
+        throw 6;
+    }
+    //! Иначе
+    else {
+
+        //! Вывести ошибку №4
+        throw 4;
+    }
+    return 0;
+}
