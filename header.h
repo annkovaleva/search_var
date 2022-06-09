@@ -26,7 +26,17 @@ void data_output(string file_name, int names_index[], int len_names);
  */
 int data_input(char name_file[], string arr_text[], int index_erorr);
 
+/*!
+ Удаление однострочных комментариев
+ * \param[in,out] arr_text[] массив строк с текстом функции
+ * \param[in] len_text длина массива
+ */
+void remove_line_comments(string arr_text[], int len_text);
 
-
-
+/*!
+ Удаление определенного символа из строки
+ * \param[in,out] str строка с текстом функции
+ * \param[in] rem_str символ, который нужно удалить
+ */
+void remove_char_from_str(string &str, string rem_str);
 

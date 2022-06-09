@@ -85,3 +85,42 @@ int data_input(char name_file[], string arr_text[], int index_erorr) {
     }
     return 0;
 }
+
+
+void remove_line_comments(string arr_text[], int len_text) {
+
+    //! Для каждой строчки текста
+    for (int i = 0; i < len_text; i++) {
+
+        //! Искать позицию специального символа начала комментария
+        int position = arr_text[i].find("//");
+
+        //! Если символ найден, то
+        if (position != -1) {
+
+            //! Удалить всё, начиная со специального символа до конца строки
+            arr_text[i].erase(position);
+        }
+    }
+}
+
+void remove_char_from_str(string &str, string rem_str) {
+
+    int position = 0;                                                                                              //! Индекс позиции
+
+    //! Пока позиция символа может быть найдена
+    while (position != -1) {
+
+        //! Искать позицию символа в строке
+        position = str.find(rem_str);
+
+        //! Если нашли позицию, то
+        if (position != -1) {
+
+            //! Удалить символ
+            str.erase(position, 1);
+        }
+    }
+}
+
+
