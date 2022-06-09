@@ -46,3 +46,9 @@ void remove_char_from_str(string &str, string rem_str);
  * \param[in] rem_str слово, которое нужно удалить
  */
 void remove_word_from_str(string &str, string rem_str);
+
+/*!
+ Удаление ненужных пробелов
+ * \param[in,out] str строка с текстом функции
+ */
+void remove_spaces(string& str);

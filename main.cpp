@@ -146,3 +146,27 @@ void remove_word_from_str(string &str, string rem_str) {
     str.erase(0,1);
 }
 
+void remove_spaces(string& str) {
+
+    int count_char = 1;                                                                                                     //! Счётчик символов в строке
+
+    //! Пока не дошли до конца строки
+    while (str[count_char] != '\0') {
+
+        //! Если текущий символ пробел, а перед ним и после него не буквы, то
+        if ((   (str[count_char] == ' ' || str[count_char] == '\t') && !isalnum(str[count_char - 1]) &&  isalnum(str[count_char + 1]) && str[count_char - 1] != '_' && str[count_char + 1] != '_')
+            || ((str[count_char] == ' ' || str[count_char] == '\t') &&  isalnum(str[count_char - 1]) && !isalnum(str[count_char + 1]) && str[count_char - 1] != '_' && str[count_char + 1] != '_')
+            || ((str[count_char] == ' ' || str[count_char] == '\t') && !isalnum(str[count_char - 1]) && !isalnum(str[count_char + 1]) && str[count_char - 1] != '_' && str[count_char + 1] != '_') ) {
+
+            //! Удалить текущий символ
+            str.erase(count_char, 1);
+        }
+
+        //! Иначе
+        else
+        {
+            //! Инкрементировать счетчик символов
+            count_char++;
+        }
+    }
+}
