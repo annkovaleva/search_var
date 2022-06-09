@@ -40,3 +40,9 @@ void remove_line_comments(string arr_text[], int len_text);
  */
 void remove_char_from_str(string &str, string rem_str);
 
+/*!
+ Удаление определенного слова из строки
+ * \param[in,out] str строка с текстом функции
+ * \param[in] rem_str слово, которое нужно удалить
+ */
+void remove_word_from_str(string &str, string rem_str);

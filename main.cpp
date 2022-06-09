@@ -123,4 +123,26 @@ void remove_char_from_str(string &str, string rem_str) {
     }
 }
 
+void remove_word_from_str(string &str, string rem_str) {
+
+    str.insert(0, ";");
+    int position = 0;                                                                                              //! Индекс позиции
+    int len = rem_str.length();                                                                                    //! Длина слова
+
+    //! Пока позиция может быть найдена
+    while (position != -1) {
+
+        //! Искать позицию начала слова в строке
+        position = str.find(rem_str, position+1);
+
+        //! Если нашли позицию и проверили, что это не часть слова, то
+        if (position != -1 && !isalnum(str[position + len]) && !isalnum(str[position - 1]) && str[position + len]!='_' && str[position - 1]!='_') {
+
+            //! Удалить слово
+            str.erase(position, len);
+        }
+    }
+
+    str.erase(0,1);
+}
 
