@@ -52,3 +52,12 @@ void remove_word_from_str(string &str, string rem_str);
  * \param[in,out] str строка с текстом функции
  */
 void remove_spaces(string& str);
+
+/*!
+ Поиск переменной с помощью регулярных выражений
+ * \param[in] str_with_text строка с текстом функции
+ * \param[in] len_names количество переменных
+ * \param[in,out] names_index[] массив с ответами, объявлена ли переменная
+ * \param[in] names[] массив с именами переменных
+ */
+void dump_regex(string& str_with_text, int len_names, int names_index[], string names[]);

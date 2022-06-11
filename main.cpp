@@ -170,3 +170,37 @@ void remove_spaces(string& str) {
         }
     }
 }
+
+void dump_regex(string& str_with_text, int len_names, int names_index[], string names[]) {
+
+    QString str = QString::fromUtf8(str_with_text.c_str());
+
+    //! Для каждой переменной искать её объявление
+    for (int l = 0; l < len_names; l++) {
+
+        /*! Генерирование регулярного выражения для поиска объявления переменных базовых типов
+         *  \code
+         *  string regul1 = "(int|char|float|double|short|long|unsigned|signed)[^;^(]*[\\s,](";
+         *  string regul2 = ")[^A-Z^a-z^0-9^_^(]";
+         *  regul1 = regul1 + names[l] + regul2;
+         *  \endcode
+         */
+        string regul_bas_1 = "(int|char|float|double|short|long|unsigned|signed)[^;^(]*[\\s,](";
+        string regul_bas_2 = ")[^A-Z^a-z^0-9^_^(]";
+        regul_bas_1 = regul_bas_1 + names[l] + regul_bas_2;
+        QString regul_bas_3 = QString::fromUtf8(regul_bas_1.c_str());
+        QRegExp regul_basic(regul_bas_3);
+
+        //! Поиск объявления переменной базового типа в строке с помощью шаблона
+        int pos_basic = regul_basic.indexIn(str);
+        QStringList list_basic = regul_basic.capturedTexts();
+
+        //! Если позиция найдена, то
+        if(pos_basic!=-1) {
+
+            //! Считаем, что переменная найдена
+            names_index[l]=1;
+        }
+
+    }
+}
