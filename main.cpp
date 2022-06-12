@@ -201,6 +201,7 @@ void dump_regex(string& str_with_text, int len_names, int names_index[], string 
             //! Считаем, что переменная найдена
             names_index[l]=1;
         }
+
         /*! Генерирование регулярного выражения для поиска объявления переменной пользовательских типов данных
          *  \code
          *  string regul4 = "(\\w+)[^;^(]*[\\s,](";
@@ -270,5 +271,28 @@ void dump_regex(string& str_with_text, int len_names, int names_index[], string 
             names_index[l]=1;
         }
 
+        /*! Генерирование регулярного выражения для поиска define
+        *  \code
+        *  string regul10 = "(#define)\\s(";
+        *  string regul11 = ")[^A-Z^a-z^0-9]";
+        *  regul10 = regul10 + names[l] + regul11;
+        *  \endcode
+        */
+        string regul_define1 = "(#define)\\s(";
+        string regul_define2 = ")[^A-Z^a-z^0-9]";
+        regul_define1 = regul_define1 + names[l] + regul_define2;
+        QString regul_define3 = QString::fromUtf8(regul_define1.c_str());
+        QRegExp regul_for_defline(regul_define3);
+
+        //! Поиск объявления особого случая пользовательского типа данных в строке с помощью шаблона
+        int pos_define = regul_for_defline.indexIn(str);
+        QStringList list_define = regul_for_defline.capturedTexts();
+
+        //! Если позиция найдена, то
+        if(pos_define!=-1) {
+
+            //! Считаем, что переменная найдена
+            names_index[l]=1;
+        }
     }
 }
