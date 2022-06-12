@@ -245,5 +245,30 @@ void dump_regex(string& str_with_text, int len_names, int names_index[], string 
                 names_index[l]=1;
             }
         }
+
+        /*! Генерирование регулярного выражения для поиска объявления особого случая пользовательского типа данных
+        *  \code
+        *  string regul7 = "(struct||enum||union)(\\s)(\\w+)({.*})(";
+        *  string regul8 = ")[^A-Z^a-z^0-9^_^(]";
+        *  regul7 = regul7 + names[l] + regul8;
+        *  \endcode
+        */
+        string regul_super_custom1 = "(struct||enum||union)(\\s)(\\w+)(\\{.*\\})(";
+        string regul_super_custom2 = ")[^A-Z^a-z^0-9^_^(]";
+        regul_super_custom1 = regul_super_custom1 + names[l] + regul_super_custom2;
+        QString regul_super_custom3 = QString::fromUtf8(regul_super_custom1.c_str());
+        QRegExp regul_super_custom(regul_super_custom3);
+
+        //! Поиск объявления особого случая пользовательского типа данных в строке с помощью шаблона
+        int pos_super_custom = regul_super_custom.indexIn(str);
+        QStringList list_super_custom = regul_super_custom.capturedTexts();
+
+        //! Если позиция найдена, то
+        if(pos_super_custom!=-1) {
+
+            //! Считаем, что переменная найдена
+            names_index[l]=1;
+        }
+
     }
 }
