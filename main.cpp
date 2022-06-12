@@ -201,6 +201,49 @@ void dump_regex(string& str_with_text, int len_names, int names_index[], string 
             //! Считаем, что переменная найдена
             names_index[l]=1;
         }
+        /*! Генерирование регулярного выражения для поиска объявления переменной пользовательских типов данных
+         *  \code
+         *  string regul4 = "(\\w+)[^;^(]*[\\s,](";
+         *  string regul5 = ")[^A-Z^a-z^0-9^_^(]";
+         *  regul4 = regul4 + names[l] + regul5;
+         *  \endcode
+         */
+        string regul_custom_1 = "(\\w+)[^;^(]*[\\s,](";
+        string regulregul_custom_2 = ")[^A-Z^a-z^0-9^_^(]";
+        regul_custom_1 = regul_custom_1 + names[l] + regulregul_custom_2;
+        QString regul_custom_3 = QString::fromUtf8(regul_custom_1.c_str());
+        QRegExp regul_custom(regul_custom_3);
 
+        //! Поиск объявления переменной пользовательского типа в строке с помощью шаблона
+        int pos_custom = regul_custom.indexIn(str);
+        QStringList list_custom = regul_custom.capturedTexts();
+
+        //! Если часть строки подошла под шаблон, то
+        if(pos_custom!=-1) {
+
+            /*! Генерирование регулярного выражения для поиска объявления пользовательского типа данных
+            *  \code
+            *  QString name_custom = list2[1];
+            *  QString regul7 = "(struct||union|enum)\\s(";
+            *  QString regul8 = ")";
+            *  \endcode
+            */
+            QString name_custom = list_custom[1];
+            QString regul_cus1 = "(struct||union|enum)\\s(";
+            QString regul_cus2 = ")";
+            regul_cus1 = regul_cus1 + name_custom + regul_cus2;
+            QRegExp regul_custom_seu(regul_cus1);
+
+            //! Поиск объявления пользовательского типа данных в строке с помощью шаблона
+            QStringList list_cus = regul_custom_seu.capturedTexts();
+            int pos_cus = regul_custom_seu.indexIn(str);
+
+            //! Если позиция найдена, то
+            if(pos_cus!=-1) {
+
+                //! Считаем, что переменная найдена
+                names_index[l]=1;
+            }
+        }
     }
 }
