@@ -9,6 +9,144 @@
 
 int main(int argc, char *argv[])
 {
+
+    //!Блок ловли ошибок
+    try {
+
+        string names[100];                                                                                         //! Массив строк с именами переменных
+        int names_index[100];                                                                                      //! Массив с индикаторами объявления переменных
+
+        /*! Регулярное выражение для проверки расширения файла с названиями переменных и выходного файла
+         *  \code
+         *  regex regular_for_names(".+(\\.txt)$")
+         *  \endcode
+        */
+        regex regular_for_names_and_result(".+(\\.txt)$");
+
+        //! Если последняя часть строки названия файла с переменными не подошла под шаблон, то
+        cmatch result1;
+        if (!regex_search(argv[1], result1, regular_for_names_and_result))
+        {
+            //! Вывести ошибку №1
+            throw 1;
+        }
+
+        //! Для каждого названия файлов с текстом функции
+        int count_for_arr = 2;                                                                                 //! Счетчик для массива с названиями файлов
+
+        /*! Регулярное выражение для проверки расширения файлов с текстом программы
+         *  \code
+         *  regex regular_name_next(".+(\\.(txt||h||cpp))$")
+         *  \endcode
+        */
+        regex regular_name_next(".+(\\.(txt||h||cpp))$");
+        for (int i = 0; i < (argc - 3); i++) {
+
+            //! Если последняя часть строки названия не подошла под шаблон, то
+            cmatch result2;
+            if (!regex_search(argv[count_for_arr ], result2, regular_name_next))
+            {
+                //! Вывести ошибку №2
+               throw 2;
+            }
+
+            //! Инкрементировать счетчик для массива
+            count_for_arr ++;
+        }
+
+        //! Если последняя часть строки названия выходного файла не подошла под шаблон, то
+        cmatch result3;
+        if (!regex_search(argv[argc-1], result3, regular_for_names_and_result))
+        {
+            //! Вывести ошибку №3
+            throw 3;
+        }
+
+        //! Поместить названия переменных из файла в массив строк
+        int len_names = data_input(argv[1], names, 1);
+
+        //! Проверить корректность названий переменных
+        for (int i = 0; i < len_names; i++) {
+
+            int count_indexes = 0;                                                                                             //! Счетчик индекса символов в слове
+
+            //! Пока слово не закончилось
+            while (names[i][count_indexes] != '\0') {
+
+                //! Если текущий символ запрещенный символ в названиях переменных, то
+                if (!isalnum(names[i][count_indexes]) && names[i][count_indexes] != '_') {
+
+                    //! Вывести ошибку, добавив в неё неопределенный символ
+                    cout << "An invalid character was found \"" << names[i][count_indexes] << "\" in a file with variable names." << endl;
+                    return 0;
+                }
+
+                // Инкрементировать счетчик символов в слове
+                count_indexes++;
+            }
+        }
+
+        //! Заполнить массив с индикаторами отрицательными ответами
+        for (int i = 0; i < len_names; i++) {
+            names_index[i] = 0;
+        }
+
+        //! Для каждого файла с текстом функции искать объявление переменных
+        for (int j = 2; j < (argc-1); j++) {
+
+            string text_func[10000];                                                                               //! Массив строк с текстом функции
+            string str_with_text;                                                                                  //! Строка со всем слепленным текстом функции
+
+            //! Поместить текст из файла в массив
+            int len_text = data_input(argv[j], text_func, 2);
+
+            //! Удалить однострочные комментарии
+            remove_line_comments(text_func, len_text);
+
+            //! Поместить текст функции в одну строку
+            for (int i = 0; i < len_text; i++) {
+                str_with_text.append(text_func[i]);
+            }
+
+            //! Удалить *
+            remove_char_from_str(str_with_text, "*");
+
+            //! Удалить const
+            remove_word_from_str(str_with_text, "const");
+
+            //! Добавить в начале текста символ для работы без вылетов
+            str_with_text.insert(0, ";");
+
+            //! Удалить все ненужные пробелы
+            remove_spaces(str_with_text);
+
+            //! Проверка всех переменных на объявление во всех файлах
+            dump_regex(str_with_text, len_names, names_index, names);
+        }
+
+        //! Запись результата поиска в файл
+        data_output(argv[argc-1], names_index, len_names);
+
+    } catch (int trouble) {
+
+        switch (trouble) {
+        case 1: cout << "Invalid input file extension. The file must have a .txt extension." << endl;
+            break;
+        case 2: cout << "Invalid input file extension. The file must have the extension .txt, .cpp, .h." << endl;
+            break;
+        case 3: cout << "The extension of the output file is incorrect. The file must have a .txt extension." << endl;
+            break;
+        case 4: cout << "The file with the input data containing the text of the program is incorrectly specified. The file may not exist." << endl;
+            break;
+        case 5: cout << "Invalid output file specified. The file may not exist." << endl;
+            break;
+        case 6: cout << "Incorrectly specified input file with variable names. The file may not exist." << endl;
+            break;
+        }
+
+        return 0;
+    }
+
     return 0;
 }
 
@@ -249,7 +387,7 @@ void dump_regex(string& str_with_text, int len_names, int names_index[], string 
 
         /*! Генерирование регулярного выражения для поиска объявления особого случая пользовательского типа данных
         *  \code
-        *  string regul7 = "(struct||enum||union)(\\s)(\\w+)({.*})(";
+        *  string regul7 = "(struct||enum||union)(\\s)(\\w+)(\\{.*\\})(";
         *  string regul8 = ")[^A-Z^a-z^0-9^_^(]";
         *  regul7 = regul7 + names[l] + regul8;
         *  \endcode
